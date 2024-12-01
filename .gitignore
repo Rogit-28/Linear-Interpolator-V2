@@ -1,0 +1,48 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+env/
+scaling_env*/
+
+# Node.js
+node_modules/
+.next/
+.nuxt/
+.cache/
+
+# IDE and OS
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# Tauri
+src-tauri/target/
+src-tauri/node_modules/
+
+# Frontend build
+Frontend/scaling/node_modules/
+Frontend/scaling/.next/
+
+# Logs and temp files
+*.log
+npm-debug.log*
+yarn-debug.log*
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Build artifacts
+build/
+dist/
+out/
+target/
+*.exe
