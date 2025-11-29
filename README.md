@@ -1,79 +1,224 @@
-#  Scaling Range 📏
+# Scaling Range Desktop Application 📏
 
-A simple and intuitive GUI application for linear scaling of 3D coordinates.
+A desktop application for linear scaling of 3D coordinates with real-time calculations and history tracking.
 
-## 🚀 Functionality
+## Features
 
-This application provides a user-friendly interface for scaling 3D coordinates. It's designed to be a simple and efficient tool for developers, engineers, and anyone who needs to perform linear scaling calculations.
+### Core Functionality
+- **Real-time Scaling**: Calculates scaled values as you type
+- **Multi-axis Support**: Scale based on X, Y, or Z coordinates with automatic calculation of others
+- **Hexadecimal Support**: Handle hexadecimal values in Z coordinate calculations
+- **Range-based Scaling**: Define input ranges (X1-X2, Y1-Y2, Z1-Z2) for scaling
 
-### ✨ Features
+### User Interface
+- **Desktop Application**: Native desktop experience built with Tauri
+- **React Frontend**: Modern React interface with TypeScript
+- **Modal Interface**: Clean modal-based UI with tabbed views
+- **History Tracking**: Stores calculation history in localStorage
 
-*   **Real-time Scaling:** The application calculates the scaled values in real-time as you type, providing immediate feedback.
-*   **Flexible Input:** You can choose to scale based on `X`, `Y`, or `Z` coordinates, and the other two coordinates will be calculated automatically.
-*   **Hexadecimal Support:** The `Z` coordinate can be entered in hexadecimal format, which is useful for certain applications.
-*   **Error Handling:** The application has built-in error handling to prevent crashes from invalid input, such as non-numeric values or division by zero.
+## Tech Stack
 
-## ⚠️ Limitations
+### Backend
+- **Python 3.8+**: Core scaling logic
+- **FastAPI**: REST API server
+- **Pydantic**: Data validation
+- **Uvicorn**: ASGI server
 
-While this application is a useful tool for simple linear scaling, it has some limitations:
+### Frontend
+- **React 19**: Component-based UI
+- **Next.js 16**: Full-stack framework
+- **TypeScript**: Type safety
+- **Tailwind CSS**: Styling framework
+- **Radix UI**: Accessible components
 
-*   **No Support for Non-Linear Scaling:** The application only supports linear scaling. It cannot be used for non-linear scaling, such as logarithmic or exponential scaling.
-*   **No Support for Batch Processing:** The application can only process one set of coordinates at a time. It does not support batch processing of multiple sets of coordinates.
-*   **No Support for Saving and Loading Configurations:** The application does not have the ability to save and load scaling configurations. You will need to re-enter the scaling parameters every time you use the application.
+### Desktop
+- **Tauri**: Desktop application framework
+- **Rust**: Native performance
 
-## 🤖 How it Works
+## Architecture
 
-The application uses a linear scaling algorithm to calculate the corresponding `Y` and `Z` coordinates for a given `X` coordinate, and vice-versa. The scaling is based on a defined range, which is set by two reference points: `(X1, Y1, Z1)` and `(X2, Y2, Z2)`.
+### Project Structure
+```
+Scaling-Range/
+├── backend/                 # Python FastAPI backend
+│   ├── scaling_logic.py     # Core algorithms
+│   ├── tauri_backend.py     # Tauri API integration
+│   ├── requirements.txt     # Python dependencies
+│   ├── test_scaling_logic.py # Unit tests
+│   └── test_api.py         # API tests
+├── Frontend/scaling/       # Next.js frontend
+│   ├── components/         # React components
+│   │   ├── scaling-range-modal.tsx # Main calculator
+│   │   └── ui/            # UI primitives
+│   ├── app/               # Next.js pages
+│   ├── lib/utils.ts       # Utility functions
+│   └── public/            # Static assets
+└── src-tauri/             # Tauri configuration
+    ├── Cargo.toml         # Rust dependencies
+    └── src/main.rs        # Tauri entry point
+```
 
-The core of the calculation is the `_calculate_scaled_value` method, which takes an input value and scales it to a new range. The method uses the following formula to calculate the scaled value:
+### Data Flow
+1. User inputs coordinates and ranges in React UI
+2. Frontend makes POST request to `http://127.0.0.1:8001/scale`
+3. FastAPI backend processes request using scaling logic
+4. Results returned as JSON response
+5. History automatically saved to localStorage
 
+## Getting Started
+
+### Prerequisites
+- Node.js (v18+)
+- Rust (v1.70+)
+- Python (v3.8+)
+- npm or yarn
+
+### Installation
+
+1. **Clone and navigate to project**
+   ```bash
+   git clone <repository-url>
+   cd Scaling-Range
+   ```
+
+2. **Install Python dependencies**
+   ```bash
+   cd backend
+   pip install -r requirements.txt
+   ```
+
+3. **Install frontend dependencies**
+   ```bash
+   cd Frontend/scaling
+   npm install
+   ```
+
+### Running Development Mode
+
+1. **Start backend server**
+   ```bash
+   cd backend
+   python tauri_backend.py
+   ```
+   Server starts on `http://127.0.0.1:8001`
+
+2. **Start frontend development server**
+   ```bash
+   cd Frontend/scaling
+   npm run dev
+   ```
+
+### Building for Production
+
+**Automatic build**:
+```bash
+python build_tauri.py
+```
+
+**Manual build**:
+```bash
+# Build frontend
+cd Frontend/scaling
+npm run build
+
+# Build Tauri app
+cd ../src-tauri
+cargo tauri build
+```
+
+Built executable will be in `src-tauri/target/release/`
+
+## Usage Guide
+
+### Basic Scaling
+1. Enter range values (X1-X2, Y1-Y2, Z1-Z2)
+2. Select scaling axis (X, Y, or Z) using radio buttons
+3. Input value in the selected axis field
+4. Other coordinates calculate automatically
+
+### Hexadecimal Mode
+1. Check "Z in Hex" checkbox
+2. Enter hex values (with or without "0x" prefix)
+3. Results display in hexadecimal format
+
+### History Management
+- All calculations automatically saved
+- Switch to "History" tab to view past calculations
+- Clear history using "Clear All" button
+
+## Testing
+
+### Backend Tests
+```bash
+cd backend
+python -m pytest test_scaling_logic.py # Core logic tests
+python -m pytest test_api.py           # API endpoint tests
+```
+
+### Running All Tests
+```bash
+cd backend
+python -m pytest  # Run all backend tests
+```
+
+## API Documentation
+
+### Scaling Endpoint
+```
+POST /scale
+Content-Type: application/json
+```
+
+**Request**:
+```json
+{
+  "x_input": "string",
+  "y_input": "string",
+  "z_input": "string", 
+  "x1": "string",
+  "x2": "string",
+  "y1": "string",
+  "y2": "string",
+  "z1": "string",
+  "z2": "string",
+  "scale_from": "x|y|z",
+  "z_in_hex": boolean
+}
+```
+
+**Response**:
+```json
+{
+  "x": "string",
+  "y": "string",
+  "z": "string"
+}
+```
+
+### Health Check
+```
+GET /health
+```
+
+## Scaling Algorithm
+
+The application uses linear interpolation:
 ```
 scaled_value = slope * input_value + intercept
+slope = (output_end - output_start) / (input_end - input_start)  
+intercept = output_start - (slope * input_start)
 ```
 
-where:
+## License
 
-*   `slope = (output_end - output_start) / (input_end - input_start)`
-*   `intercept = output_start - (slope * input_start)`
+MIT License - see LICENSE file for details.
 
-## 📦 Dependencies
+## Contributing
 
-*   `customtkinter`
-
-## 🏃‍♀️ How to Run
-
-1.  Clone the repository.
-2.  Install the dependencies:
-    ```
-    pip install customtkinter
-    ```
-3.  Run the application:
-    ```
-    python scaling.py
-    ```
-
-## 🛠️ How to Build
-
-To build the executable, you will need `pyinstaller`.
-
-1.  Install `pyinstaller`:
-    ```
-    pip install pyinstaller
-    ```
-2.  Build the executable:
-    ```
-    pyinstaller --onefile --windowed --icon=logo.ico scaling.py
-    ```
-
-## 🐳 How to Use the Dockerfile
-
-To build and run the application with Docker, you will need to have Docker installed on your system.
-
-1.  Build the Docker image:
-    ```
-    docker build -t scaling-app .
-    ```
-2.  Run the Docker container:
-    ```
-    docker run -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix scaling-app
-    ```
+1. Fork the repository
+2. Create feature branch (`git checkout -b feature-name`)
+3. Make changes
+4. Add tests if applicable
+5. Run tests (`npm test` and `pytest`)
+6. Commit with conventional messages
+7. Push and create pull request
